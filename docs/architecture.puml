@@ -1,0 +1,118 @@
+@startuml Redis Emulator Architecture
+
+!define LIGHTORANGE
+!define LIGHTBLUE
+!define LIGHTGREEN
+
+package "Redis Emulator Gem" {
+  
+  class "Redis::Emulator::Client" as Client {
+    - cache : ActiveSupport::Cache
+    + initialize(options)
+    + get(key) : String
+    + set(key, value, **options) : String
+    + del(*keys) : Integer
+    + exists(*keys) : Integer
+    + expire(key, seconds) : Integer
+    + ttl(key) : Integer
+    + incr(key) : Integer
+    + decr(key) : Integer
+    + incrby(key, increment) : Integer
+    + decrby(key, decrement) : Integer
+    + mget(*keys) : Array
+    + mset(*args) : String
+    + setex(key, seconds, value) : String
+    + setnx(key, value) : Integer
+    + getset(key, value) : String
+    + append(key, value) : Integer
+    + strlen(key) : Integer
+    + flushdb() : String
+    + ping(message) : String
+    + info(section) : String
+    + pipelined() : void
+    + multi() : void
+    + close() : Boolean
+    + connected?() : Boolean
+  }
+
+  class "Redis::Emulator::Configuration" as Config {
+    + cache_store : ActiveSupport::Cache
+    + initialize()
+    + cache() : ActiveSupport::Cache
+  }
+
+  class "Redis::Emulator::Engine" as Engine {
+    + isolate_namespace
+    + initializer()
+  }
+
+  class "Redis::Emulator" as Module {
+    + configuration : Configuration
+    + configure() : void
+    + new(options) : Client
+  }
+
+  Module --> Config : manages
+  Module --> Client : creates
+  Engine --> Module : initializes
+  Client --> Config : uses cache_store
+}
+
+package "Rails Framework" {
+  interface "ActiveSupport::Cache::Store" as CacheStore {
+    + read(key)
+    + write(key, value, options)
+    + delete(key)
+    + exist?(key)
+    + clear()
+  }
+  
+  class "SolidCache::Store" as SolidCache {
+    + read(key)
+    + write(key, value, options)
+    + delete(key)
+    + exist?(key)
+    + clear()
+  }
+  
+  SolidCache ..|> CacheStore : implements
+}
+
+Client --> CacheStore : uses
+Config --> CacheStore : configures
+
+package "Application" {
+  class "Rails Application" as App {
+    + config.cache_store
+  }
+  
+  class "Application Code" as AppCode {
+    + redis = Redis::Emulator.new
+    + redis.set(key, value)
+    + redis.get(key)
+  }
+}
+
+App --> SolidCache : configures
+AppCode --> Module : uses
+AppCode --> Client : interacts with
+
+note right of Client
+  Provides Redis-compatible
+  interface using Solid Cache
+  as the persistence layer
+end note
+
+note right of SolidCache
+  Database-backed cache store
+  provides persistent storage
+  for all Redis operations
+end note
+
+note bottom of Module
+  Main entry point for
+  creating Redis Emulator
+  client instances
+end note
+
+@enduml

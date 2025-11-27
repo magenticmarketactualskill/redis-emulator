@@ -1,0 +1,27 @@
+===============================================================================
+
+Redis Emulator has been installed!
+
+Next steps:
+
+1. Ensure Solid Cache is configured in your Rails application:
+   
+   # config/environments/production.rb
+   config.cache_store = :solid_cache_store
+
+2. Run Solid Cache migrations:
+   
+   rails solid_cache:install:migrations
+   rails db:migrate
+
+3. Use Redis::Emulator in your application:
+   
+   redis = Redis::Emulator.new
+   redis.set("mykey", "myvalue")
+   redis.get("mykey") # => "myvalue"
+
+4. You can also configure it globally in config/initializers/redis_emulator.rb
+
+For more information, see the README.md file.
+
+===============================================================================
