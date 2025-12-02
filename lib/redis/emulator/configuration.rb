@@ -1,4 +1,4 @@
-module Redis
+class Redis
   module Emulator
     class Configuration
       attr_accessor :cache_store

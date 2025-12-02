@@ -1,4 +1,4 @@
-module Redis
+class Redis
   module Emulator
     # Redis client emulator that uses Rails Solid Cache as the backend
     # Provides a Redis-compatible interface for basic cache operations

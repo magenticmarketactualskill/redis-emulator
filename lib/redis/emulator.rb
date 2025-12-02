@@ -1,9 +1,12 @@
+# Ensure Redis class is loaded first
+require 'redis' unless defined?(Redis)
+
 require "redis/emulator/version"
 require "redis/emulator/engine"
 require "redis/emulator/client"
 require "redis/emulator/configuration"
 
-module Redis
+class Redis
   module Emulator
     class << self
       attr_accessor :configuration

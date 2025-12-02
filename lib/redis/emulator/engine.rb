@@ -1,4 +1,4 @@
-module Redis
+class Redis
   module Emulator
     class Engine < ::Rails::Engine
       isolate_namespace Redis::Emulator

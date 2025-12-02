@@ -1,4 +1,4 @@
-module Redis
+class Redis
   module Emulator
     module Generators
       class InstallGenerator < Rails::Generators::Base

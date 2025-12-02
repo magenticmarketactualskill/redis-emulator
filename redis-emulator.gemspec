@@ -1,3 +1,10 @@
+# Load redis gem first to ensure Redis class exists
+begin
+  require 'redis'
+rescue LoadError
+  # Redis gem not yet available during gemspec evaluation
+end
+
 require_relative "lib/redis/emulator/version"
 
 Gem::Specification.new do |spec|
@@ -19,6 +26,6 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "rails", ">= 7.0"
-  spec.add_dependency "redis", "~> 5.0"
+  spec.add_dependency "redis", "~> 4.0"
   spec.add_dependency "solid_cache", "~> 1.0"
 end

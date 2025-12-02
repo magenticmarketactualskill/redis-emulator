@@ -1,4 +1,4 @@
-module Redis
+class Redis
   module Emulator
     class ApplicationController < ActionController::Base
     end
